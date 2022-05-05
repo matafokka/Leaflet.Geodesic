@@ -1055,8 +1055,10 @@
          * If negative - shortened. If 0, nothing will be done.
          */
         GeodesicLine.prototype.changeLength = function (from, byFraction) {
-            // Split sometimes fail with distance really close to 0
-            if (byFraction === 0 || this.geom.geodesic.isEqual(this.statistics.sphericalLengthRadians, 0)) {
+            // Split sometimes fails with length really close to 0. We need to use length in meters because
+            // length in radians may be close to 0 but length in meters is completely fine. This happens with lines
+            // shorter than 10 meters.
+            if (byFraction === 0 || this.geom.geodesic.isEqual(this.statistics.sphericalLengthMeters, 0)) {
                 return this;
             }
             var isBoth = from === "both", doStart = isBoth || from === "start", doEnd = isBoth || from === "end", fn = "naturalDrawingLine", args = [];
